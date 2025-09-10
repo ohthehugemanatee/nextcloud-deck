@@ -199,16 +199,16 @@ export default {
 			if (!this.stack?.stalenessGradientEnabled) {
 				return null
 			}
-			
+
 			const stackCards = this.$store.getters.cardsByStack(this.card.stackId).filter(card => !card.archived)
 			if (stackCards.length <= 1) {
 				return null
 			}
-			
+
 			const timestamps = stackCards.map(card => card.lastModified)
 			const newestTimestamp = Math.max(...timestamps)
 			const oldestTimestamp = Math.min(...timestamps)
-			
+
 			return calculateStalenessColor(this.card.lastModified, newestTimestamp, oldestTimestamp)
 		},
 	},

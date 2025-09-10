@@ -361,7 +361,7 @@ export default {
 		toggleStalenessGradient(enabled) {
 			this.$store.dispatch('updateStackStalenessGradient', {
 				stackId: this.stack.id,
-				enabled: enabled
+				enabled,
 			})
 		},
 	},
