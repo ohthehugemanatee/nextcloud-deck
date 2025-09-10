@@ -7,6 +7,7 @@
 	<AttachmentDragAndDrop v-if="card" :card-id="card.id" class="drop-upload--card">
 		<div :ref="`card${card.id}`"
 			:class="{'compact': compactMode, 'current-card': currentCard, 'no-labels': !hasLabels, 'card__editable': canEdit, 'card__archived': card.archived, 'card__highlight': highlight}"
+			:style="stalenessBackgroundColor ? { backgroundColor: stalenessBackgroundColor } : {}"
 			tag="div"
 			:tabindex="0"
 			class="card"
@@ -88,6 +89,7 @@ import CardMenu from './CardMenu.vue'
 import CardCover from './CardCover.vue'
 import DueDate from './badges/DueDate.vue'
 import { getCurrentUser } from '@nextcloud/auth'
+import { calculateStalenessColor } from '../../helpers/staleness.js'
 
 const TITLE_EDITING_STATE = {
 	OFF: 0,
@@ -192,6 +194,25 @@ export default {
 				return false
 			}
 			return this.hasBadges
+		},
+		stalenessBackgroundColor() {
+			if (!this.stack?.stalenessGradientEnabled) {
+				return null
+			}
+
+			const stackCards = this.$store.getters.cardsByStack(this.card.stackId).filter(card => {
+				// Filter to only include cards in the same view (archived vs non-archived)
+				return this.showArchived ? card.archived : !card.archived
+			})
+			if (stackCards.length <= 1) {
+				return null
+			}
+
+			const timestamps = stackCards.map(card => card.lastModified)
+			const newestTimestamp = Math.max(...timestamps)
+			const oldestTimestamp = Math.min(...timestamps)
+
+			return calculateStalenessColor(this.card.lastModified, newestTimestamp, oldestTimestamp)
 		},
 	},
 	watch: {

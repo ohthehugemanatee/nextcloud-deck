@@ -52,6 +52,9 @@
 					</template>
 					{{ t('deck', 'Unarchive all cards') }}
 				</NcActionButton>
+				<NcActionCheckbox :checked="stack.stalenessGradientEnabled" @update:checked="toggleStalenessGradient">
+					{{ t('deck', 'Show staleness gradient') }}
+				</NcActionCheckbox>
 				<NcActionButton icon="icon-delete" @click="deleteStack(stack)">
 					{{ t('deck', 'Delete list') }}
 				</NcActionButton>
@@ -139,7 +142,7 @@ import { mapGetters, mapState } from 'vuex'
 import { Container, Draggable } from 'vue-smooth-dnd'
 import ArchiveIcon from 'vue-material-design-icons/ArchiveOutline.vue'
 import CardPlusOutline from 'vue-material-design-icons/CardPlusOutline.vue'
-import { NcActions, NcActionButton, NcModal } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcActionCheckbox, NcModal } from '@nextcloud/vue'
 import { showError, showUndo } from '@nextcloud/dialogs'
 
 import CardItem from '../cards/CardItem.vue'
@@ -151,6 +154,7 @@ export default {
 	components: {
 		NcActions,
 		NcActionButton,
+		NcActionCheckbox,
 		CardItem,
 		Container,
 		Draggable,
@@ -352,6 +356,12 @@ export default {
 
 				clearInterval(timer)
 				timer = window.setInterval(() => autoscroll(e), 25)
+			})
+		},
+		toggleStalenessGradient(enabled) {
+			this.$store.dispatch('updateStackStalenessGradient', {
+				stackId: this.stack.id,
+				enabled,
 			})
 		},
 	},

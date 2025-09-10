@@ -47,7 +47,7 @@ export default {
 		updateStack(state, stack) {
 			const existingIndex = state.stacks.findIndex(_stack => _stack.id === stack.id)
 			if (existingIndex !== -1) {
-				state.stacks[existingIndex].title = stack.title
+				Vue.set(state.stacks, existingIndex, Object.assign({}, state.stacks[existingIndex], stack))
 			}
 		},
 	},
@@ -112,6 +112,16 @@ export default {
 				.then((stack) => {
 					commit('updateStack', stack)
 				})
+		},
+		updateStackStalenessGradient({ commit }, { stackId, enabled }) {
+			const stack = this.getters.stackById(stackId)
+			if (stack) {
+				const updatedStack = { ...stack, stalenessGradientEnabled: enabled }
+				apiClient.updateStack(updatedStack)
+					.then((stack) => {
+						commit('updateStack', stack)
+					})
+			}
 		},
 	},
 }
