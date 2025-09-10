@@ -266,7 +266,7 @@ class StackService {
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 * @throws BadRequestException
 	 */
-	public function update($id, $title, $boardId, $order, $deletedAt) {
+	public function update($id, $title, $boardId, $order, $deletedAt, $stalenessGradientEnabled = null) {
 		$this->stackServiceValidator->check(compact('id', 'title', 'boardId', 'order'));
 
 		$this->permissionService->checkPermission($this->stackMapper, $id, Acl::PERMISSION_MANAGE);
@@ -282,6 +282,11 @@ class StackService {
 		$stack->setBoardId($boardId);
 		$stack->setOrder($order);
 		$stack->setDeletedAt($deletedAt);
+		
+		if ($stalenessGradientEnabled !== null) {
+			$stack->setStalenessGradientEnabled((bool)$stalenessGradientEnabled);
+		}
+		
 		$changes->setAfter($stack);
 		$stack = $this->stackMapper->update($stack);
 		$this->activityManager->triggerUpdateEvents(

@@ -15,6 +15,8 @@ use Sabre\VObject\Component\VCalendar;
  * @method int getDeletedAt()
  * @method int getLastModified()
  * @method int getOrder()
+ * @method bool getStalenessGradientEnabled()
+ * @method void setStalenessGradientEnabled(bool $enabled)
  */
 class Stack extends RelationalEntity {
 	protected $title;
@@ -23,6 +25,7 @@ class Stack extends RelationalEntity {
 	protected $lastModified = 0;
 	protected $cards = [];
 	protected $order;
+	protected $stalenessGradientEnabled = false;
 
 	public function __construct() {
 		$this->addType('id', 'integer');
@@ -30,6 +33,7 @@ class Stack extends RelationalEntity {
 		$this->addType('deletedAt', 'integer');
 		$this->addType('lastModified', 'integer');
 		$this->addType('order', 'integer');
+		$this->addType('stalenessGradientEnabled', 'boolean');
 	}
 
 	public function setCards($cards) {
