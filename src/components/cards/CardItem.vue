@@ -200,7 +200,10 @@ export default {
 				return null
 			}
 
-			const stackCards = this.$store.getters.cardsByStack(this.card.stackId).filter(card => !card.archived)
+			const stackCards = this.$store.getters.cardsByStack(this.card.stackId).filter(card => {
+				// Filter to only include cards in the same view (archived vs non-archived)
+				return this.showArchived ? card.archived : !card.archived
+			})
 			if (stackCards.length <= 1) {
 				return null
 			}
