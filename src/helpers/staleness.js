@@ -32,6 +32,6 @@ export function calculateStalenessColor(lastModified, newestTimestamp, oldestTim
 	const red = 255
 
 	// Convert to hex
-	const toHex = (value) => value.toString(16).padStart(2, '0')
+	const toHex = (value) => value.toString(16).padStart(2, '0').toUpperCase()
 	return `#${toHex(red)}${toHex(green)}${toHex(blue)}`
 }
